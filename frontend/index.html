@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFELINK HOSPITAL - Complete Appointment System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --hospital-blue: #1a73e8;
+            --hospital-green: #2a7d4c;
+            --hospital-red: #e53935;
+            --hospital-purple: #8e24aa;
+            --hospital-orange: #fb8c00;
+            --hospital-teal: #00897b;
+            --hospital-light: #f5f7fa;
+            --hospital-dark: #0d3c2d;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        /* Hospital Header */
+        .hospital-header {
+            background: linear-gradient(135deg, var(--hospital-dark) 0%, var(--hospital-green) 100%);
+            color: white;
+            padding: 25px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .hospital-header:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+        }
+        
+        .hospital-logo {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+        
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 40px auto;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            border-bottom: 3px solid #dee2e6;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            padding: 10px 20px 0;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 600;
+            padding: 12px 25px;
+            margin-right: 5px;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: var(--hospital-green);
+            color: white;
+            border-bottom: 3px solid var(--hospital-green);
+        }
+        
+        /* Appointment Box */
+        .appointment-box {
+            background: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: var(--hospital-dark);
+            font-weight: 700;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--hospital-green);
+            border-radius: 2px;
+        }
+        
+        /* Specialization Cards */
+        .specialization-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            height: 100%;
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+        
+        .specialization-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-color: var(--hospital-green);
+        }
+        
+        .specialization-card.selected {
+            border-color: var(--hospital-green);
+            background: #e8f5e9;
+        }
+        
+        .specialization-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            height: 80px;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+        }
+        
+        .cardiology { background: #ffebee; color: var(--hospital-red); }
+        .neurology { background: #f3e5f5; color: var(--hospital-purple); }
+        .orthopedics { background: #fff3e0; color: var(--hospital-orange); }
+        .gynaecology { background: #e8f5e9; color: var(--hospital-green); }
+        .pediatrics { background: #e1f5fe; color: #0288d1; }
+        .dermatology { background: #fff8e1; color: #ff8f00; }
+        .oncology { background: #fce4ec; color: #c2185b; }
+        .psychiatry { background: #e8eaf6; color: #303f9f; }
+        .urology { background: #e0f2f1; color: var(--hospital-teal); }
+        .ophthalmology { background: #fffde7; color: #f9a825; }
+        
+        /* Doctor Cards */
+        .doctor-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            height: 100%;
+            border-left: 5px solid var(--hospital-green);
+        }
+        
+        .doctor-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        .doctor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--hospital-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--hospital-dark);
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        
+        .doctor-select-btn {
+            background: var(--hospital-green);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .doctor-select-btn:hover {
+            background: var(--hospital-dark);
+            transform: scale(1.05);
+        }
+        
+        /* Time Slots */
+        .time-slots-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--hospital-light);
+            border-radius: 12px;
+            border: 2px dashed #b2dfdb;
+        }
+        
+        .time-slot {
+            padding: 12px 8px;
+            border: 2px solid #4db6ac;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            font-weight: 600;
+            color: var(--hospital-dark);
+            position: relative;
+        }
+        
+        .time-slot:hover:not(.booked) {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--hospital-green);
+        }
+        
+        .time-slot.selected {
+            background: var(--hospital-green) !important;
+            color: white !important;
+            border-color: var(--hospital-green) !important;
+        }
+        
+        .time-slot.booked {
+            background: #ffebee;
+            color: #c62828;
+            border-color: #ffcdd2;
+            cursor: not-allowed;
+        }
+        
+        .time-slot.booked:after {
+            content: '(B)';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #c62828;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Payment Methods */
+        .payment-method-card {
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .payment-method-card:hover {
+            border-color: var(--hospital-green);
+            transform: translateY(-3px);
+        }
+        
+        .payment-method-card.selected {
+            border-color: var(--hospital-green);
+            background: #e8f5e9;
+        }
+        
+        .payment-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--hospital-green);
+        }
+        
+        /* Appointment Summary */
+        .summary-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--hospital-green);
+        }
+        
+        .summary-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #dee2e6;
+        }
+        
+        /* Footer */
+        .hospital-footer {
+            background: var(--hospital-dark);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hospital-logo {
+                font-size: 2rem;
+            }
+            
+            .appointment-box {
+                padding: 25px 15px;
+            }
+            
+            .time-slots-container {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+        }
+        
+        /* Step Progress */
+        .step-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .step-progress:before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #dee2e6;
+            z-index: 1;
+        }
+        
+        .step-progress:after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 0;
+            width: 33.33%;
+            height: 4px;
+            background: var(--hospital-green);
+            z-index: 2;
+            transition: width 0.5s;
+        }
+        
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .step-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #dee2e6;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 0 auto 10px;
+            transition: all 0.3s;
+        }
+        
+        .step.active .step-circle {
+            background: var(--hospital-green);
+            color: white;
+            box-shadow: 0 0 0 8px rgba(42, 125, 76, 0.2);
+        }
+        
+        .step.completed .step-circle {
+            background: var(--hospital-green);
+            color: white;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .status-booked { background: #e3f2fd; color: #1565c0; }
+        .status-confirmed { background: #e8f5e9; color: var(--hospital-green); }
+        .status-completed { background: #f5f5f5; color: #616161; }
+        .status-cancelled { background: #ffebee; color: #c62828; }
+    </style>
+</head>
+<body>
+    <!-- Hospital Header -->
+    <div class="hospital-header">
+        <div class="container">
+            <div class="text-center">
+                <h1 class="hospital-logo">LIFELINK HOSPITAL</h1>
+                <p class="lead mb-0">Multi-Specialty Hospital & Research Center</p>
+                <p class="mb-0"><i class="bi bi-telephone-fill me-2"></i>Emergency: 108 | <i class="bi bi-clock-fill me-2"></i>24/7 Services</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="container">
+            <!-- Step Progress -->
+            <div class="step-progress" id="stepProgress">
+                <div class="step active" id="step1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Specialization</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Choose Doctor</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Date & Time</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Payment</div>
+                </div>
+            </div>
+            
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="appointmentTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="book-tab" data-bs-toggle="tab" data-bs-target="#book" type="button" role="tab">Book Appointment</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab">My Appointments</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="doctors-tab" data-bs-toggle="tab" data-bs-target="#doctors" type="button" role="tab">Our Doctors</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="departments-tab" data-bs-toggle="tab" data-bs-target="#departments" type="button" role="tab">Departments</button>
+                </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content appointment-box">
+                <!-- Book Appointment Tab -->
+                <div class="tab-pane fade show active" id="book" role="tabpanel">
+                    <h3 class="section-title">Book Your Appointment</h3>
+                    
+                    <div id="appointmentSteps">
+                        <!-- Step 1: Select Specialization -->
+                        <div class="step-content" id="step1Content">
+                            <div class="text-center mb-5">
+                                <h4>Select Medical Department</h4>
+                                <p class="text-muted">Choose the specialization you need consultation for</p>
+                            </div>
+                            
+                            <div class="row" id="specializationList">
+                                <!-- Specializations will be loaded here -->
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-5">
+                                <button class="btn btn-secondary" disabled>Previous</button>
+                                <button class="btn btn-primary" onclick="goToStep(2)">Next: Choose Doctor</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 2: Choose Doctor -->
+                        <div class="step-content" id="step2Content" style="display: none;">
+                            <div class="text-center mb-5">
+                                <h4>Select Your Doctor</h4>
+                                <p class="text-muted" id="specializationSelectedText"></p>
+                            </div>
+                            
+                            <div class="row" id="doctorsList">
+                                <!-- Doctors will be loaded here -->
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-5">
+                                <button class="btn btn-secondary" onclick="goToStep(1)">Previous</button>
+                                <button class="btn btn-primary" onclick="goToStep(3)">Next: Date & Time</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 3: Date & Time -->
+                        <div class="step-content" id="step3Content" style="display: none;">
+                            <div class="text-center mb-5">
+                                <h4>Select Date & Time Slot</h4>
+                                <p class="text-muted" id="doctorSelectedText"></p>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Patient Details</label>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <input type="text" class="form-control" id="patientName" placeholder="Full Name *" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <input type="tel" class="form-control" id="patientPhone" placeholder="Phone Number *" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <input type="email" class="form-control" id="patientEmail" placeholder="Email Address">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <input type="number" class="form-control" id="patientAge" placeholder="Age" min="1" max="120">
+                                            </div>
+                                            <div class="col-12 mb-3">
+                                                <textarea class="form-control" id="symptoms" rows="3" placeholder="Describe your symptoms (optional)"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Select Date</label>
+                                        <input type="date" class="form-control" id="appointmentDate" required>
+                                        <small class="text-muted">Appointments can be booked for the next 30 days</small>
+                                    </div>
+                                    
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">Available Time Slots</label>
+                                        <div class="time-slots-container" id="timeSlots">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="bi bi-calendar-event display-6 mb-3"></i>
+                                                <p>Select a date to view available time slots</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-4">
+                                    <div class="summary-card">
+                                        <h5 class="mb-4">Appointment Summary</h5>
+                                        
+                                        <div class="summary-item">
+                                            <small class="text-muted">Department</small>
+                                            <p class="mb-0 fw-bold" id="summaryDepartment">Not selected</p>
+                                        </div>
+                                        
+                                        <div class="summary-item">
+                                            <small class="text-muted">Doctor</small>
+                                            <p class="mb-0 fw-bold" id="summaryDoctor">Not selected</p>
+                                        </div>
+                                        
+                                        <div class="summary-item">
+                                            <small class="text-muted">Date & Time</small>
+                                            <p class="mb-0 fw-bold" id="summaryDateTime">Not selected</p>
+                                        </div>
+                                        
+                                        <div class="summary-item">
+                                            <small class="text-muted">Consultation Fee</small>
+                                            <p class="mb-0 fw-bold" id="summaryFee">₹ 0</p>
+                                        </div>
+                                        
+                                        <div class="mt-4 pt-3 border-top">
+                                            <h5 class="d-flex justify-content-between">
+                                                <span>Total</span>
+                                                <span id="summaryTotal">₹ 0</span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-5">
+                                <button class="btn btn-secondary" onclick="goToStep(2)">Previous</button>
+                                <button class="btn btn-primary" onclick="goToStep(4)">Next: Payment</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Step 4: Payment -->
+                        <div class="step-content" id="step4Content" style="display: none;">
+                            <div class="text-center mb-5">
+                                <h4>Select Payment Method</h4>
+                                <p class="text-muted">Complete your appointment booking</p>
+                            </div>
+                            
+                            <div class="row mb-5">
+                                <div class="col-md-6 mb-4">
+                                    <div class="payment-method-card" onclick="selectPaymentMethod('cash')" id="cashPaymentCard">
+                                        <div class="payment-icon">
+                                            <i class="bi bi-cash-coin"></i>
+                                        </div>
+                                        <h5>Pay in Person</h5>
+                                        <p class="text-muted">Pay at hospital reception when you arrive for your appointment</p>
+                                        <div class="form-check d-none">
+                                            <input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-4">
+                                    <div class="payment-method-card" onclick="selectPaymentMethod('online')" id="onlinePaymentCard">
+                                        <div class="payment-icon">
+                                            <i class="bi bi-credit-card"></i>
+                                        </div>
+                                        <h5>Online Payment</h5>
+                                        <p class="text-muted">Pay securely online via UPI, Card, or Net Banking</p>
+                                        <div class="form-check d-none">
+                                            <input class="form-check-input" type="radio" name="paymentMethod" id="onlinePayment" value="online">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Online Payment Form (Hidden by default) -->
+                            <div class="card mb-4" id="onlinePaymentForm" style="display: none;">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">Payment Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Card Number</label>
+                                            <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">Expiry Date</label>
+                                            <input type="text" class="form-control" placeholder="MM/YY">
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label">CVV</label>
+                                            <input type="text" class="form-control" placeholder="123" maxlength="3">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Name on Card</label>
+                                            <input type="text" class="form-control" placeholder="John Doe">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">UPI ID</label>
+                                            <input type="text" class="form-control" placeholder="username@upi">
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="saveCard">
+                                                <label class="form-check-label" for="saveCard">
+                                                    Save card for future payments
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between mt-5">
+                                <button class="btn btn-secondary" onclick="goToStep(3)">Previous</button>
+                                <button class="btn btn-success btn-lg" onclick="confirmAppointment()">
+                                    <i class="bi bi-check-circle me-2"></i>Confirm Appointment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- My Appointments Tab -->
+                <div class="tab-pane fade" id="appointments" role="tabpanel">
+                    <h3 class="section-title">My Appointments</h3>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search by doctor name or date..." id="appointmentSearch">
+                                <button class="btn btn-outline-primary" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary active" onclick="filterAppointments('all')">All</button>
+                                <button type="button" class="btn btn-outline-primary" onclick="filterAppointments('upcoming')">Upcoming</button>
+                                <button type="button" class="btn btn-outline-primary" onclick="filterAppointments('completed')">Completed</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="appointmentsList">
+                        <!-- Appointments will be loaded here -->
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-x display-1 text-muted"></i>
+                            <h4 class="mt-3">No Appointments Found</h4>
+                            <p class="text-muted">You haven't booked any appointments yet</p>
+                            <button class="btn btn-primary" onclick="switchToBookTab()">
+                                <i class="bi bi-plus-circle me-2"></i>Book Your First Appointment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Our Doctors Tab -->
+                <div class="tab-pane fade" id="doctors" role="tabpanel">
+                    <h3 class="section-title">Our Medical Team</h3>
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Search doctors..." id="doctorSearch">
+                                <button class="btn btn-outline-primary" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select" id="departmentFilter">
+                                <option value="">All Departments</option>
+                                <!-- Departments will be loaded here -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row" id="allDoctorsList">
+                        <!-- All doctors will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Departments Tab -->
+                <div class="tab-pane fade" id="departments" role="tabpanel">
+                    <h3 class="section-title">Hospital Departments</h3>
+                    
+                    <div class="row" id="departmentsList">
+                        <!-- Departments will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="hospital-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h4>LIFELINK HOSPITAL</h4>
+                    <p>A premier multi-specialty hospital providing comprehensive healthcare services with state-of-the-art technology and compassionate care.</p>
+                    <div class="mt-3">
+                        <a href="#" class="text-white me-3 fs-5"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white me-3 fs-5"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-white me-3 fs-5"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-white fs-5"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light text-decoration-none">Home</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">About Us</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Doctors</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Services</a></li>
+                        <li><a href="#" class="text-light text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Contact Info</h5>
+                    <p><i class="bi bi-geo-alt me-2"></i>123 Medical Street, Health City, HC 560001</p>
+                    <p><i class="bi bi-telephone me-2"></i>Appointments: 1800-123-4567</p>
+                    <p><i class="bi bi-envelope me-2"></i>info@lifelinkhospital.com</p>
+                    <p><i class="bi bi-clock me-2"></i>Emergency: 24/7</p>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5>Emergency Contacts</h5>
+                    <div class="alert alert-danger mb-2 py-2">
+                        <i class="bi bi-telephone-plus me-2"></i><strong>108</strong> - Ambulance
+                    </div>
+                    <div class="alert alert-warning mb-2 py-2">
+                        <i class="bi bi-telephone me-2"></i><strong>104</strong> - Health Helpline
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: #2a7d4c;">
+            <div class="text-center">
+                <p>&copy; 2024 LIFELINK HOSPITAL. All rights reserved. | <a href="#" class="text-white">Privacy Policy</a> | <a href="#" class="text-white">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">Appointment Confirmed!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="text-success mb-3" style="font-size: 4rem;">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <h4>Thank You!</h4>
+                    <p class="text-muted">Your appointment has been successfully booked</p>
+                    
+                    <div class="card mt-4 text-start">
+                        <div class="card-body">
+                            <h6 class="card-title">Appointment Details</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted">Appointment ID</small>
+                                    <p class="fw-bold" id="modalAppointmentId">AP123456</p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Date</small>
+                                    <p class="fw-bold" id="modalAppointmentDate">15 Feb 2024</p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Doctor</small>
+                                    <p class="fw-bold" id="modalDoctorName">Dr. Joyesree Roy</p>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted">Time</small>
+                                    <p class="fw-bold" id="modalAppointmentTime">10:00 AM</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="bi bi-info-circle me-2"></i>
+                        You will receive a confirmation SMS and email shortly.
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadAppointmentDetails()">
+                        <i class="bi bi-download me-2"></i>Download Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data Models
+        const departments = [
+            { id: 1, name: "Cardiology", icon: "bi-heart-pulse", color: "cardiology", description: "Heart and cardiovascular system" },
+            { id: 2, name: "Neurology", icon: "bi-brain", color: "neurology", description: "Brain and nervous system" },
+            { id: 3, name: "Orthopedics", icon: "bi-bone", color: "orthopedics", description: "Bones, joints, and muscles" },
+            { id: 4, name: "Gynaecology", icon: "bi-gender-female", color: "gynaecology", description: "Women's reproductive health" },
+            { id: 5, name: "Pediatrics", icon: "bi-emoji-smile", color: "pediatrics", description: "Children's health" },
+            { id: 6, name: "Dermatology", icon: "bi-droplet", color: "dermatology", description: "Skin, hair, and nails" },
+            { id: 7, name: "Oncology", icon: "bi-clipboard-pulse", color: "oncology", description: "Cancer diagnosis and treatment" },
+            { id: 8, name: "Psychiatry", icon: "bi-activity", color: "psychiatry", description: "Mental health and disorders" },
+            { id: 9, name: "Urology", icon: "bi-droplet-half", color: "urology", description: "Urinary system and male reproductive" },
+            { id: 10, name: "Ophthalmology", icon: "bi-eye", color: "ophthalmology", description: "Eyes and vision" },
+            { id: 11, name: "ENT", icon: "bi-ear", color: "primary", description: "Ear, nose, and throat" },
+            { id: 12, name: "Gastroenterology", icon: "bi-stomach", color: "success", description: "Digestive system" },
+            { id: 13, name: "Endocrinology", icon: "bi-capsule", color: "warning", description: "Hormones and glands" },
+            { id: 14, name: "Pulmonology", icon: "bi-lungs", color: "info", description: "Lungs and respiratory system" },
+            { id: 15, name: "Nephrology", icon: "bi-prescription2", color: "danger", description: "Kidneys and urinary system" }
+        ];
+
+        const doctors = [
+            // Cardiology (3 doctors)
+            { id: 1, name: "Dr. Amit Sharma", department: "Cardiology", specialization: "Interventional Cardiologist", 
+              experience: "12 years", fee: 1500, rating: 4.8, availability: ["Mon", "Wed", "Fri"], 
+              qualifications: "DM Cardiology, MD Medicine", phone: "9876543210", email: "amit.sharma@hospital.com" },
+            { id: 2, name: "Dr. Priya Reddy", department: "Cardiology", specialization: "Cardiac Electrophysiologist", 
+              experience: "9 years", fee: 1200, rating: 4.6, availability: ["Tue", "Thu", "Sat"], 
+              qualifications: "DM Cardiology, MD", phone: "9876543211", email: "priya.reddy@hospital.com" },
+            { id: 3, name: "Dr. Rajesh Khanna", department: "Cardiology", specialization: "Preventive Cardiologist", 
+              experience: "15 years", fee: 1800, rating: 4.9, availability: ["Mon", "Tue", "Wed", "Thu", "Fri"], 
+              qualifications: "DM, FACC", phone: "9876543212", email: "rajesh.khanna@hospital.com" },
+            
+            // Neurology (3 doctors)
+            { id: 4, name: "Dr. Sneha Verma", department: "Neurology", specialization: "Neurologist", 
+              experience: "14 years", fee: 1600, rating: 4.7, availability: ["Mon", "Wed", "Fri", "Sat"], 
+              qualifications: "DM Neurology, MD", phone: "9876543213", email: "sneha.verma@hospital.com" },
+            { id: 5, name: "Dr. Anil Kapoor", department: "Neurology", specialization: "Neurosurgeon", 
+              experience: "18 years", fee: 2500, rating: 4.9, availability: ["Tue", "Thu"], 
+              qualifications: "MCh Neurosurgery, MS", phone: "9876543214", email: "anil.kapoor@hospital.com" },
+            { id: 6, name: "Dr. Meera Patel", department: "Neurology", specialization: "Pediatric Neurologist", 
+              experience: "10 years", fee: 1400, rating: 4.5, availability: ["Mon", "Wed", "Fri"], 
+              qualifications: "DM Pediatric Neurology", phone: "9876543215", email: "meera.patel@hospital.com" },
+            
+            // Orthopedics (3 doctors)
+            { id: 7, name: "Dr. Rajesh Kumar", department: "Orthopedics", specialization: "Orthopedic Surgeon", 
+              experience: "18 years", fee: 2000, rating: 4.8, availability: ["Mon", "Wed", "Thu", "Sat"], 
+              qualifications: "MS Ortho, DNB", phone: "9876543216", email: "rajesh.kumar@hospital.com" },
+            { id: 8, name: "Dr. Sunil Gupta", department: "Orthopedics", specialization: "Joint Replacement Surgeon", 
+              experience: "20 years", fee: 3000, rating: 4.9, availability: ["Tue", "Fri"], 
+              qualifications: "MCh Ortho, FRCS", phone: "9876543217", email: "sunil.gupta@hospital.com" },
+            { id: 9, name: "Dr. Anita Desai", department: "Orthopedics", specialization: "Sports Medicine Specialist", 
+              experience: "12 years", fee: 1500, rating: 4.6, availability: ["Mon", "Thu", "Sat"], 
+              qualifications: "MS Ortho, Sports Medicine", phone: "9876543218", email: "anita.desai@hospital.com" },
+            
+            // Gynaecology (3 doctors)
+            { id: 10, name: "Dr. Joyesree Roy", department: "Gynaecology", specialization: "Gynaecologist & Obstetrician", 
+              experience: "15 years", fee: 1200, rating: 4.7, availability: ["Mon", "Wed", "Fri", "Sat"], 
+              qualifications: "MD, DGO", phone: "9876543219", email: "joyesree.roy@hospital.com" },
+            { id: 11, name: "Dr. Madhuri Singh", department: "Gynaecology", specialization: "Infertility Specialist", 
+              experience: "13 years", fee: 2000, rating: 4.8, availability: ["Tue", "Thu"], 
+              qualifications: "MD, DNB, Reproductive Medicine", phone: "9876543220", email: "madhuri.singh@hospital.com" },
+            { id: 12, name: "Dr. Kavita Rao", department: "Gynaecology", specialization: "High-Risk Pregnancy Specialist", 
+              experience: "16 years", fee: 1800, rating: 4.9, availability: ["Mon", "Wed", "Fri"], 
+              qualifications: "MD, FNB Maternal-Fetal Medicine", phone: "9876543221", email: "kavita.rao@hospital.com" },
+            
+            // Pediatrics (3 doctors)
+            { id: 13, name: "Dr. Priya Patel", department: "Pediatrics", specialization: "Pediatrician", 
+              experience: "10 years", fee: 1000, rating: 4.6, availability: ["Mon", "Tue", "Wed", "Thu", "Fri"], 
+              qualifications: "MD Pediatrics", phone: "9876543222", email: "priya.patel@hospital.com" },
+            { id: 14, name: "Dr. Ravi Shankar", department: "Pediatrics", specialization: "Neonatologist", 
+              experience: "14 years", fee: 1500, rating: 4.8, availability: ["Mon", "Wed", "Fri"], 
+              qualifications: "DM Neonatology", phone: "9876543223", email: "ravi.shankar@hospital.com" },
+            { id: 15, name: "Dr. Anjali Mehta", department: "Pediatrics", specialization: "Pediatric Cardiologist", 
+              experience: "11 years", fee: 1800, rating: 4.7, availability: ["Tue", "Thu", "Sat"], 
+              qualifications: "DM Pediatric Cardiology", phone: "9876543224", email: "anjali.mehta@hospital.com" },
+            
+            // Dermatology (2 doctors)
+            { id: 16, name: "Dr. Rohit Malhotra", department: "Dermatology", specialization: "Dermatologist & Cosmetologist", 
+              experience: "9 years", fee: 1200, rating: 4.5, availability: ["Mon", "Wed", "Fri", "Sat"], 
+              qualifications: "MD Dermatology", phone: "9876543225", email: "rohit.malhotra@hospital.com" },
+            { id: 17, name: "Dr. Sheetal Nair", department: "Dermatology", specialization: "Skin & Laser Specialist", 
+              experience: "12 years", fee: 1500, rating: 4.7, availability: ["Tue", "Thu"], 
+              qualifications: "MD, Diploma in Dermatology", phone: "9876543226", email: "sheetal.nair@hospital.com" },
+            
+            // Oncology (2 doctors)
+            { id: 18, name: "Dr. Vikram Singh", department: "Oncology", specialization: "Medical Oncologist", 
+              experience: "16 years", fee: 2000, rating: 4.8, availability: ["Mon", "Wed", "Fri"], 
+              qualifications: "DM Oncology", phone: "9876543227", email: "vikram.singh@hospital.com" },
+            { id: 19, name: "Dr. Geeta Sharma", department: "Oncology", specialization: "Radiation Oncologist", 
+              experience: "14 years", fee: 1800, rating: 4.7, availability: ["Tue", "Thu", "Sat"], 
+              qualifications: "MD Radiotherapy", phone: "9876543228", email: "geeta.sharma@hospital.com" },
+            
+            // Psychiatry (2 doctors)
+            { id: 20, name: "Dr. Arjun Menon", department: "Psychiatry", specialization: "Psychiatrist", 
+              experience: "13 years", fee: 1500, rating: 4.6, availability: ["Mon", "Wed", "Fri"], 
+              qualifications: "MD Psychiatry", phone: "9876543229", email: "arjun.menon@hospital.com" },
+            { id: 21, name: "Dr. Neha Gupta", department: "Psychiatry", specialization: "Child Psychiatrist", 
+              experience: "10 years", fee: 1400, rating: 4.5, availability: ["Tue", "Thu", "Sat"], 
+              qualifications: "MD, DPM", phone: "9876543230", email: "neha.gupta@hospital.com" },
+            
+            // Urology (2 doctors)
+            { id: 22, name: "Dr. Sanjay Verma", department: "Urology", specialization: "Urologist", 
+              experience: "17 years", fee: 1800, rating: 4.8, availability: ["Mon", "Wed", "Fri"], 
+              qualifications: "MCh Urology", phone: "9876543231", email: "sanjay.verma@hospital.com" },
+            { id: 23, name: "Dr. Pooja Reddy", department: "Urology", specialization: "Andrologist", 
+              experience: "11 years", fee: 1600, rating: 4.6, availability: ["Tue", "Thu", "Sat"], 
+              qualifications: "DNB Urology", phone: "9876543232", email: "pooja.reddy@hospital.com" },
+            
+            // Ophthalmology (2 doctors)
+            { id: 24, name: "Dr. Sameer Joshi", department: "Ophthalmology", specialization: "Ophthalmologist", 
+              experience: "15 years", fee: 1200, rating: 4.7, availability: ["Mon", "Wed", "Fri", "Sat"], 
+              qualifications: "MS Ophthalmology", phone: "9876543233", email: "sameer.joshi@hospital.com" },
+            { id: 25, name: "Dr. Maya Krishnan", department: "Ophthalmology", specialization: "Retina Specialist", 
+              experience: "12 years", fee: 1800, rating: 4.8, availability: ["Tue", "Thu"], 
+              qualifications: "Fellow in Retina", phone: "9876543234", email: "maya.krishnan@hospital.com" }
+        ];
+
+        // Global variables
+        let selectedDepartment = null;
+        let selectedDoctor = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedPaymentMethod = null;
+        let appointments = JSON.parse(localStorage.getItem('lifelinkAppointments')) || [];
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSpecializations();
+            loadDepartmentsTab();
+            loadAllDoctors();
+            loadAppointmentsTab();
+            
+            // Set default date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('appointmentDate').min = tomorrow.toISOString().split('T')[0];
+            document.getElementById('appointmentDate').value = tomorrow.toISOString().split('T')[0];
+            selectedDate = tomorrow.toISOString().split('T')[0];
+            
+            // Add event listeners
+            document.getElementById('appointmentDate').addEventListener('change', function() {
+                selectedDate = this.value;
+                if (selectedDoctor) {
+                    generateTimeSlots();
+                    updateSummary();
+                }
+            });
+            
+            // Initialize date in summary
+            updateSummary();
+        });
+        
+        // Load specializations for step 1
+        function loadSpecializations() {
+            const container = document.getElementById('specializationList');
+            container.innerHTML = '';
+            
+            departments.forEach(dept => {
+                const div = document.createElement('div');
+                div.className = 'col-md-3 col-sm-6 mb-4';
+                div.innerHTML = `
+                    <div class="specialization-card" onclick="selectSpecialization('${dept.name}')" id="spec-${dept.id}">
+                        <div class="specialization-icon ${dept.color}">
+                            <i class="bi ${dept.icon}"></i>
+                        </div>
+                        <h5 class="fw-bold">${dept.name}</h5>
+                        <p class="text-muted small mb-0">${dept.description}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Select a specialization
+        function selectSpecialization(departmentName) {
+            selectedDepartment = departmentName;
+            
+            // Update UI
+            document.querySelectorAll('.specialization-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            const selectedCard = document.querySelector(`#spec-${departments.find(d => d.name === departmentName).id}`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+            
+            // Update selected text
+            document.getElementById('specializationSelectedText').textContent = `Doctors in ${departmentName}`;
+            
+            // Load doctors for this department
+            loadDoctorsByDepartment(departmentName);
+            
+            // Update summary
+            document.getElementById('summaryDepartment').textContent = departmentName;
+            updateSummary();
+        }
+        
+        // Load doctors by department
+        function loadDoctorsByDepartment(departmentName) {
+            const filteredDoctors = doctors.filter(doctor => doctor.department === departmentName);
+            const container = document.getElementById('doctorsList');
+            container.innerHTML = '';
+            
+            if (filteredDoctors.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-person-x display-1 text-muted"></i>
+                        <h4 class="mt-3">No Doctors Available</h4>
+                        <p class="text-muted">Please select another department</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredDoctors.forEach(doctor => {
+                const initials = doctor.name.split(' ').map(n => n[0]).join('');
+                const div = document.createElement('div');
+                div.className = 'col-md-4 col-sm-6 mb-4';
+                div.innerHTML = `
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">
+                            ${initials}
+                        </div>
+                        <h5 class="text-center fw-bold">${doctor.name}</h5>
+                        <p class="text-center text-muted mb-1">${doctor.specialization}</p>
+                        <div class="text-center mb-3">
+                            <span class="badge bg-warning text-dark me-2">
+                                <i class="bi bi-star-fill me-1"></i>${doctor.rating}
+                            </span>
+                            <span class="badge bg-info">
+                                ${doctor.experience} exp
+                            </span>
+                        </div>
+                        <p class="text-center mb-1">
+                            <i class="bi bi-calendar-week me-1"></i>
+                            ${doctor.availability.join(', ')}
+                        </p>
+                        <p class="text-center mb-1">
+                            <i class="bi bi-currency-rupee me-1"></i>
+                            Consultation Fee: ₹ ${doctor.fee}
+                        </p>
+                        <div class="text-center mt-3">
+                            <button class="doctor-select-btn" onclick="selectDoctor(${doctor.id})">
+                                Select Doctor
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Select a doctor
+        function selectDoctor(doctorId) {
+            selectedDoctor = doctors.find(d => d.id === doctorId);
+            
+            // Update selected text
+            document.getElementById('doctorSelectedText').textContent = 
+                `Selected: ${selectedDoctor.name} - ${selectedDoctor.specialization}`;
+            
+            // Update summary
+            document.getElementById('summaryDoctor').textContent = selectedDoctor.name;
+            document.getElementById('summaryFee').textContent = `₹ ${selectedDoctor.fee}`;
+            
+            // Generate time slots
+            generateTimeSlots();
+            updateSummary();
+        }
+        
+        // Generate time slots for selected doctor and date
+        function generateTimeSlots() {
+            if (!selectedDoctor || !selectedDate) return;
+            
+            const container = document.getElementById('timeSlots');
+            const doctor = selectedDoctor;
+            
+            // Clear container
+            container.innerHTML = '';
+            
+            // Check if selected date is in doctor's availability
+            const dayOfWeek = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'short' });
+            if (!doctor.availability.includes(dayOfWeek)) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-4">
+                        <i class="bi bi-calendar-x text-danger display-6 mb-3"></i>
+                        <h5 class="text-danger">Not Available on ${new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' })}</h5>
+                        <p class="text-muted">Dr. ${doctor.name.split('Dr. ')[1]} is available on:</p>
+                        <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+                            ${doctor.availability.map(day => 
+                                `<span class="badge bg-primary">${day}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Generate time slots (9 AM to 6 PM with 30 min intervals)
+            const slots = [];
+            const startHour = 9;
+            const endHour = 18;
+            
+            for (let hour = startHour; hour < endHour; hour++) {
+                for (let minute of [0, 30]) {
+                    const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    
+                    // Check if this slot is booked
+                    const isBooked = checkIfSlotBooked(doctor.name, selectedDate, timeString);
+                    
+                    slots.push({
+                        time: timeString,
+                        booked: isBooked
+                    });
+                }
+            }
+            
+            // Display time slots
+            slots.forEach(slot => {
+                const timeDiv = document.createElement('div');
+                timeDiv.className = `time-slot ${slot.booked ? 'booked' : ''}`;
+                timeDiv.id = `slot-${slot.time.replace(':', '')}`;
+                timeDiv.textContent = slot.time;
+                
+                if (!slot.booked) {
+                    timeDiv.onclick = function() {
+                        selectTimeSlot(slot.time);
+                    };
+                    
+                    // Add check icon
+                    const icon = document.createElement('i');
+                    icon.className = 'bi bi-check-circle-fill d-none ms-1';
+                    timeDiv.appendChild(icon);
+                } else {
+                    timeDiv.innerHTML += ' <span class="badge bg-danger">B</span>';
+                }
+                
+                container.appendChild(timeDiv);
+            });
+            
+            // If no slots available
+            if (slots.every(slot => slot.booked)) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-4">
+                        <i class="bi bi-calendar-x text-danger display-6 mb-3"></i>
+                        <h5 class="text-danger">No Slots Available</h5>
+                        <p class="text-muted">All slots are booked for ${new Date(selectedDate).toLocaleDateString('en-US', { dateStyle: 'medium' })}</p>
+                        <button class="btn btn-outline-primary mt-2" onclick="document.getElementById('appointmentDate').value = ''; selectedDate = null; generateTimeSlots();">
+                            Choose Another Date
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Check if a time slot is booked
+        function checkIfSlotBooked(doctorName, date, time) {
+            return appointments.some(app => 
+                app.doctorName === doctorName && 
+                app.date === date && 
+                app.time === time &&
+                app.status !== "cancelled"
+            );
+        }
+        
+        // Select a time slot
+        function selectTimeSlot(time) {
+            selectedTime = time;
+            
+            // Update UI
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+                slot.querySelector('.bi-check-circle-fill')?.classList.add('d-none');
+            });
+            
+            const slotElement = document.getElementById(`slot-${time.replace(':', '')}`);
+            if (slotElement && !slotElement.classList.contains('booked')) {
+                slotElement.classList.add('selected');
+                const icon = slotElement.querySelector('.bi-check-circle-fill');
+                if (icon) icon.classList.remove('d-none');
+            }
+            
+            updateSummary();
+        }
+        
+        // Select payment method
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            if (method === 'cash') {
+                document.getElementById('cashPaymentCard').classList.add('selected');
+                document.getElementById('onlinePaymentForm').style.display = 'none';
+            } else {
+                document.getElementById('onlinePaymentCard').classList.add('selected');
+                document.getElementById('onlinePaymentForm').style.display = 'block';
+            }
+        }
+        
+        // Update appointment summary
+        function updateSummary() {
+            const dateTime = selectedDate && selectedTime ? 
+                `${new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} at ${selectedTime}` : 
+                'Not selected';
+            
+            document.getElementById('summaryDateTime').textContent = dateTime;
+            
+            const fee = selectedDoctor ? selectedDoctor.fee : 0;
+            document.getElementById('summaryTotal').textContent = `₹ ${fee}`;
+        }
+        
+        // Step navigation
+        function goToStep(stepNumber) {
+            // Validate current step before proceeding
+            if (stepNumber === 2 && !selectedDepartment) {
+                alert('Please select a medical department first');
+                return;
+            }
+            
+            if (stepNumber === 3 && !selectedDoctor) {
+                alert('Please select a doctor first');
+                return;
+            }
+            
+            if (stepNumber === 4) {
+                // Validate step 3
+                const patientName = document.getElementById('patientName').value;
+                const patientPhone = document.getElementById('patientPhone').value;
+                
+                if (!patientName || !patientPhone) {
+                    alert('Please enter patient name and phone number');
+                    return;
+                }
+                
+                if (!selectedTime) {
+                    alert('Please select a time slot');
+                    return;
+                }
+                
+                if (patientPhone.length !== 10) {
+                    alert('Please enter a valid 10-digit phone number');
+                    return;
+                }
+            }
+            
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(step => {
+                step.style.display = 'none';
+            });
+            
+            // Show selected step
+            document.getElementById(`step${stepNumber}Content`).style.display = 'block';
+            
+            // Update step progress
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < stepNumber) {
+                    step.classList.add('completed');
+                } else if (index + 1 === stepNumber) {
+                    step.classList.add('active');
+                }
+            });
+            
+            // Update progress bar
+            const progressBar = document.querySelector('.step-progress:after');
+            if (progressBar) {
+                progressBar.style.width = `${(stepNumber - 1) * 33.33}%`;
+            }
+        }
+        
+        // Confirm appointment
+        function confirmAppointment() {
+            if (!selectedPaymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            // Create appointment object
+            const appointmentId = 'AP' + Date.now().toString().slice(-8);
+            const newAppointment = {
+                id: appointmentId,
+                patientName: document.getElementById('patientName').value,
+                patientPhone: document.getElementById('patientPhone').value,
+                patientEmail: document.getElementById('patientEmail').value || '',
+                patientAge: document.getElementById('patientAge').value || '',
+                symptoms: document.getElementById('symptoms').value || '',
+                department: selectedDepartment,
+                doctorName: selectedDoctor.name,
+                doctorSpecialization: selectedDoctor.specialization,
+                date: selectedDate,
+                time: selectedTime,
+                fee: selectedDoctor.fee,
+                paymentMethod: selectedPaymentMethod,
+                status: selectedPaymentMethod === 'online' ? 'confirmed' : 'pending_payment',
+                bookedAt: new Date().toISOString(),
+                appointmentDate: new Date(selectedDate + 'T' + selectedTime).toISOString()
+            };
+            
+            // Add to appointments array
+            appointments.push(newAppointment);
+            
+            // Save to localStorage
+            localStorage.setItem('lifelinkAppointments', JSON.stringify(appointments));
+            
+            // Show success modal
+            document.getElementById('modalAppointmentId').textContent = appointmentId;
+            document.getElementById('modalAppointmentDate').textContent = 
+                new Date(selectedDate).toLocaleDateString('en-US', { dateStyle: 'medium' });
+            document.getElementById('modalDoctorName').textContent = selectedDoctor.name;
+            document.getElementById('modalAppointmentTime').textContent = selectedTime;
+            
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+            
+            // Reset form
+            resetForm();
+            
+            // Update appointments tab
+            loadAppointmentsTab();
+        }
+        
+        // Reset form
+        function resetForm() {
+            selectedDepartment = null;
+            selectedDoctor = null;
+            selectedTime = null;
+            selectedPaymentMethod = null;
+            
+            // Reset UI
+            document.querySelectorAll('.specialization-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            document.getElementById('patientName').value = '';
+            document.getElementById('patientPhone').value = '';
+            document.getElementById('patientEmail').value = '';
+            document.getElementById('patientAge').value = '';
+            document.getElementById('symptoms').value = '';
+            
+            // Reset summary
+            document.getElementById('summaryDepartment').textContent = 'Not selected';
+            document.getElementById('summaryDoctor').textContent = 'Not selected';
+            document.getElementById('summaryDateTime').textContent = 'Not selected';
+            document.getElementById('summaryFee').textContent = '₹ 0';
+            document.getElementById('summaryTotal').textContent = '₹ 0';
+            
+            // Go back to step 1
+            goToStep(1);
+        }
+        
+        // Load all doctors for doctors tab
+        function loadAllDoctors() {
+            const container = document.getElementById('allDoctorsList');
+            container.innerHTML = '';
+            
+            // Load department filter
+            const filterSelect = document.getElementById('departmentFilter');
+            departments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.name;
+                option.textContent = dept.name;
+                filterSelect.appendChild(option);
+            });
+            
+            // Add event listener to filter
+            filterSelect.addEventListener('change', filterDoctors);
+            document.getElementById('doctorSearch').addEventListener('input', filterDoctors);
+            
+            // Display all doctors initially
+            displayDoctors(doctors);
+        }
+        
+        // Filter doctors based on search and department
+        function filterDoctors() {
+            const searchTerm = document.getElementById('doctorSearch').value.toLowerCase();
+            const departmentFilter = document.getElementById('departmentFilter').value;
+            
+            let filteredDoctors = doctors;
+            
+            if (departmentFilter) {
+                filteredDoctors = filteredDoctors.filter(doctor => doctor.department === departmentFilter);
+            }
+            
+            if (searchTerm) {
+                filteredDoctors = filteredDoctors.filter(doctor => 
+                    doctor.name.toLowerCase().includes(searchTerm) || 
+                    doctor.specialization.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            displayDoctors(filteredDoctors);
+        }
+        
+        // Display doctors
+        function displayDoctors(doctorList) {
+            const container = document.getElementById('allDoctorsList');
+            container.innerHTML = '';
+            
+            if (doctorList.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <i class="bi bi-person-x display-1 text-muted"></i>
+                        <h4 class="mt-3">No Doctors Found</h4>
+                        <p class="text-muted">Try a different search or filter</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            doctorList.forEach(doctor => {
+                const initials = doctor.name.split(' ').map(n => n[0]).join('');
+                const div = document.createElement('div');
+                div.className = 'col-lg-3 col-md-4 col-sm-6 mb-4';
+                div.innerHTML = `
+                    <div class="doctor-card">
+                        <div class="doctor-avatar">
+                            ${initials}
+                        </div>
+                        <h5 class="text-center fw-bold">${doctor.name}</h5>
+                        <p class="text-center text-muted mb-1">${doctor.specialization}</p>
+                        <div class="text-center mb-2">
+                            <span class="badge bg-primary">${doctor.department}</span>
+                        </div>
+                        <div class="text-center mb-3">
+                            <span class="badge bg-warning text-dark me-1">
+                                <i class="bi bi-star-fill me-1"></i>${doctor.rating}
+                            </span>
+                            <span class="badge bg-info me-1">
+                                ${doctor.experience} exp
+                            </span>
+                        </div>
+                        <p class="text-center mb-1 small">
+                            <i class="bi bi-calendar-week me-1"></i>
+                            ${doctor.availability.join(', ')}
+                        </p>
+                        <p class="text-center mb-2 small">
+                            <i class="bi bi-currency-rupee me-1"></i>
+                            Fee: ₹ ${doctor.fee}
+                        </p>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-sm btn-outline-primary" onclick="bookWithDoctor(${doctor.id})">
+                                <i class="bi bi-calendar-plus me-1"></i>Book Appointment
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Book appointment with a specific doctor from doctors tab
+        function bookWithDoctor(doctorId) {
+            // Switch to book tab
+            document.getElementById('book-tab').click();
+            
+            // Select the doctor's department
+            const doctor = doctors.find(d => d.id === doctorId);
+            selectSpecialization(doctor.department);
+            
+            // Go to step 2
+            setTimeout(() => {
+                selectDoctor(doctorId);
+                goToStep(2);
+            }, 100);
+        }
+        
+        // Load departments for departments tab
+        function loadDepartmentsTab() {
+            const container = document.getElementById('departmentsList');
+            container.innerHTML = '';
+            
+            departments.forEach(dept => {
+                const div = document.createElement('div');
+                div.className = 'col-md-4 col-sm-6 mb-4';
+                div.innerHTML = `
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="specialization-icon ${dept.color} me-3" style="width: 60px; height: 60px;">
+                                    <i class="bi ${dept.icon}"></i>
+                                </div>
+                                <h5 class="card-title mb-0 fw-bold">${dept.name}</h5>
+                            </div>
+                            <p class="card-text text-muted">${dept.description}</p>
+                            <div class="mt-3">
+                                <span class="badge bg-light text-dark">
+                                    <i class="bi bi-people me-1"></i>
+                                    ${doctors.filter(d => d.department === dept.name).length} Doctors
+                                </span>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-sm btn-outline-primary" onclick="viewDepartment('${dept.name}')">
+                                    View Doctors
+                                </button>
+                                <button class="btn btn-sm btn-primary ms-2" onclick="bookInDepartment('${dept.name}')">
+                                    Book Appointment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // View doctors in a department
+        function viewDepartment(departmentName) {
+            document.getElementById('doctors-tab').click();
+            document.getElementById('departmentFilter').value = departmentName;
+            filterDoctors();
+        }
+        
+        // Book appointment in a department
+        function bookInDepartment(departmentName) {
+            document.getElementById('book-tab').click();
+            selectSpecialization(departmentName);
+        }
+        
+        // Load appointments for appointments tab
+        function loadAppointmentsTab() {
+            const container = document.getElementById('appointmentsList');
+            
+            if (appointments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x display-1 text-muted"></i>
+                        <h4 class="mt-3">No Appointments Found</h4>
+                        <p class="text-muted">You haven't booked any appointments yet</p>
+                        <button class="btn btn-primary" onclick="switchToBookTab()">
+                            <i class="bi bi-plus-circle me-2"></i>Book Your First Appointment
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort appointments by date (newest first)
+            const sortedAppointments = [...appointments].sort((a, b) => 
+                new Date(b.bookedAt) - new Date(a.bookedAt)
+            );
+            
+            container.innerHTML = '';
+            
+            sortedAppointments.forEach(app => {
+                const appointmentDate = new Date(app.date);
+                const isUpcoming = appointmentDate >= new Date();
+                const statusClass = app.status === 'confirmed' ? 'status-confirmed' : 
+                                  app.status === 'pending_payment' ? 'status-booked' :
+                                  app.status === 'completed' ? 'status-completed' : 'status-cancelled';
+                
+                const div = document.createElement('div');
+                div.className = 'card mb-3';
+                div.innerHTML = `
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title mb-1">Appointment #${app.id}</h5>
+                                <p class="card-text mb-1">
+                                    <i class="bi bi-person me-1"></i>${app.patientName}
+                                    ${app.patientAge ? `(${app.patientAge} years)` : ''}
+                                </p>
+                            </div>
+                            <div>
+                                <span class="status-badge ${statusClass}">${app.status.replace('_', ' ').toUpperCase()}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <small class="text-muted">Doctor</small>
+                                <p class="mb-1 fw-bold">${app.doctorName}</p>
+                                <p class="mb-0 text-muted small">${app.doctorSpecialization}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Date & Time</small>
+                                <p class="mb-1 fw-bold">${new Date(app.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+                                <p class="mb-0 text-muted">${app.time}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Payment</small>
+                                <p class="mb-1 fw-bold">₹ ${app.fee}</p>
+                                <p class="mb-0 text-muted small">${app.paymentMethod === 'online' ? 'Paid Online' : 'Pay at Hospital'}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <small class="text-muted">Actions</small>
+                                <div class="mt-1">
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="viewAppointmentDetails('${app.id}')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    ${isUpcoming ? `
+                                        <button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment('${app.id}')">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${app.symptoms ? `
+                            <div class="mt-3">
+                                <small class="text-muted">Symptoms:</small>
+                                <p class="mb-0">${app.symptoms}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Filter appointments
+        function filterAppointments(filterType) {
+            const appointmentsList = JSON.parse(localStorage.getItem('lifelinkAppointments')) || [];
+            let filteredAppointments = appointmentsList;
+            
+            const now = new Date();
+            
+            if (filterType === 'upcoming') {
+                filteredAppointments = appointmentsList.filter(app => 
+                    new Date(app.date + 'T' + app.time) >= now
+                );
+            } else if (filterType === 'completed') {
+                filteredAppointments = appointmentsList.filter(app => 
+                    new Date(app.date + 'T' + app.time) < now
+                );
+            }
+            
+            // Update button states
+            document.querySelectorAll('#appointments .btn-group .btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase() === filterType || 
+                    (filterType === 'all' && btn.textContent === 'All')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Re-render appointments
+            const container = document.getElementById('appointmentsList');
+            if (filteredAppointments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x display-1 text-muted"></i>
+                        <h4 class="mt-3">No ${filterType} Appointments</h4>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '';
+            filteredAppointments.forEach(app => {
+                const appointmentDate = new Date(app.date);
+                const isUpcoming = appointmentDate >= new Date();
+                const statusClass = app.status === 'confirmed' ? 'status-confirmed' : 
+                                  app.status === 'pending_payment' ? 'status-booked' :
+                                  app.status === 'completed' ? 'status-completed' : 'status-cancelled';
+                
+                const div = document.createElement('div');
+                div.className = 'card mb-3';
+                div.innerHTML = `
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="card-title mb-1">Appointment #${app.id}</h5>
+                                <p class="card-text mb-1">
+                                    <i class="bi bi-person me-1"></i>${app.patientName}
+                                </p>
+                            </div>
+                            <div>
+                                <span class="status-badge ${statusClass}">${app.status.replace('_', ' ').toUpperCase()}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <small class="text-muted">Doctor</small>
+                                <p class="mb-1 fw-bold">${app.doctorName}</p>
+                                <p class="mb-0 text-muted small">${app.doctorSpecialization}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Date & Time</small>
+                                <p class="mb-1 fw-bold">${new Date(app.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+                                <p class="mb-0 text-muted">${app.time}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <small class="text-muted">Payment</small>
+                                <p class="mb-1 fw-bold">₹ ${app.fee}</p>
+                                <p class="mb-0 text-muted small">${app.paymentMethod === 'online' ? 'Paid Online' : 'Pay at Hospital'}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <small class="text-muted">Actions</small>
+                                <div class="mt-1">
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="viewAppointmentDetails('${app.id}')">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    ${isUpcoming ? `
+                                        <button class="btn btn-sm btn-outline-danger" onclick="cancelAppointment('${app.id}')">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // View appointment details
+        function viewAppointmentDetails(appointmentId) {
+            const appointment = appointments.find(app => app.id === appointmentId);
+            if (!appointment) return;
+            
+            const details = `
+                Appointment ID: ${appointment.id}
+                Patient: ${appointment.patientName} ${appointment.patientAge ? `(${appointment.patientAge} years)` : ''}
+                Phone: ${appointment.patientPhone}
+                Email: ${appointment.patientEmail || 'Not provided'}
+                
+                Doctor: ${appointment.doctorName}
+                Specialization: ${appointment.doctorSpecialization}
+                Department: ${appointment.department}
+                
+                Date: ${new Date(appointment.date).toLocaleDateString('en-US', { dateStyle: 'full' })}
+                Time: ${appointment.time}
+                
+                Consultation Fee: ₹ ${appointment.fee}
+                Payment Method: ${appointment.paymentMethod === 'online' ? 'Online Payment' : 'Cash at Hospital'}
+                Status: ${appointment.status.toUpperCase().replace('_', ' ')}
+                
+                ${appointment.symptoms ? `Symptoms: ${appointment.symptoms}` : ''}
+                
+                Booked on: ${new Date(appointment.bookedAt).toLocaleString()}
+            `;
+            
+            alert(details);
+        }
+        
+        // Cancel appointment
+        function cancelAppointment(appointmentId) {
+            if (!confirm('Are you sure you want to cancel this appointment?')) return;
+            
+            const appointmentIndex = appointments.findIndex(app => app.id === appointmentId);
+            if (appointmentIndex !== -1) {
+                appointments[appointmentIndex].status = 'cancelled';
+                localStorage.setItem('lifelinkAppointments', JSON.stringify(appointments));
+                loadAppointmentsTab();
+                
+                alert('Appointment cancelled successfully');
+            }
+        }
+        
+        // Switch to book tab
+        function switchToBookTab() {
+            document.getElementById('book-tab').click();
+        }
+        
+        // Download appointment details
+        function downloadAppointmentDetails() {
+            const appointmentId = document.getElementById('modalAppointmentId').textContent;
+            const appointment = appointments.find(app => app.id === appointmentId);
+            
+            if (!appointment) return;
+            
+            const content = `
+                LIFELINK HOSPITAL - APPOINTMENT CONFIRMATION
+                =============================================
+                
+                APPOINTMENT DETAILS
+                -------------------
+                Appointment ID: ${appointment.id}
+                Date: ${new Date(appointment.bookedAt).toLocaleString()}
+                
+                PATIENT INFORMATION
+                -------------------
+                Name: ${appointment.patientName}
+                Phone: ${appointment.patientPhone}
+                Email: ${appointment.patientEmail || 'Not provided'}
+                Age: ${appointment.patientAge || 'Not provided'}
+                
+                DOCTOR INFORMATION
+                ------------------
+                Doctor: ${appointment.doctorName}
+                Specialization: ${appointment.doctorSpecialization}
+                Department: ${appointment.department}
+                
+                APPOINTMENT SCHEDULE
+                --------------------
+                Date: ${new Date(appointment.date).toLocaleDateString('en-US', { dateStyle: 'full' })}
+                Time: ${appointment.time}
+                
+                PAYMENT INFORMATION
+                -------------------
+                Consultation Fee: ₹ ${appointment.fee}
+                Payment Method: ${appointment.paymentMethod === 'online' ? 'Online Payment' : 'Cash at Hospital'}
+                Status: ${appointment.status.toUpperCase().replace('_', ' ')}
+                
+                ADDITIONAL NOTES
+                ----------------
+                ${appointment.symptoms ? `Symptoms: ${appointment.symptoms}` : 'No additional notes'}
+                
+                =============================================
+                Please arrive 15 minutes before your appointment time.
+                Bring this confirmation and your ID proof.
+                For emergencies, call 108.
+                
+                Thank you for choosing LIFELINK HOSPITAL!
+            `;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Appointment-${appointment.id}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('successModal')).hide();
+        }
+    </script>
+</body>
+</html>
