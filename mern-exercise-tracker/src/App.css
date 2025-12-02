@@ -1,0 +1,74 @@
+/* General page */
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #a8edea, #fed6e3);
+  margin: 0;
+  padding: 0;
+}
+
+/* Center container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 20px;
+}
+
+/* Login card */
+.login-card {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  width: 350px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Inputs */
+.login-card input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 5px;
+  font-weight: bold;
+}
+
+button.login-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+
+button.login-btn:hover {
+  background-color: #3730a3;
+}
+
+button.role-btn {
+  background-color: #10b981;
+  color: white;
+}
+
+button.role-btn:hover {
+  background-color: #047857;
+}
+
+/* Response box */
+.response-box {
+  background-color: #f3f4f6;
+  padding: 15px;
+  border-radius: 10px;
+  width: 350px;
+  min-height: 50px;
+  white-space: pre-wrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
