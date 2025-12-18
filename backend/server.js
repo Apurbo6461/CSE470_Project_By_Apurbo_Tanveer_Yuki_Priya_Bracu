@@ -24,10 +24,27 @@ if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => res.sendFile(path.join(__dirname, '..', 'frontend', 'dist', 'index.html')));
 }
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✓ Server running on port ${PORT} (bound to 0.0.0.0), pid=${process.pid}`);
-});
+// Start server with port fallback if the desired port is unavailable
+const DEFAULT_PORT = Number(process.env.PORT) || 5000;
+const MAX_FALLBACK_TRIES = 10;
+
+function startServer(port, attemptsLeft) {
+  const server = app.listen(port, '0.0.0.0', () => {
+    console.log(`✓ Server running on port ${port} (bound to 0.0.0.0), pid=${process.pid}`);
+  });
+
+  server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE' && attemptsLeft > 0) {
+      console.warn(`Port ${port} is in use, trying port ${port + 1}...`);
+      setTimeout(() => startServer(port + 1, attemptsLeft - 1), 200);
+    } else {
+      console.error('Failed to start server:', err);
+      process.exit(1);
+    }
+  });
+}
+
+startServer(DEFAULT_PORT, MAX_FALLBACK_TRIES);
 
 // lightweight debug endpoint
 app.get('/__debug', (req, res) => {
