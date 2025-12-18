@@ -1,22 +1,30 @@
-// frontend/src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';  // Use Routes instead of Switch
-import './App.css';
-import Login from './components/Login';
-import ExerciseList from './components/ExerciseList';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./components/Login";
+import BloodDonorRequest from "./components/BloodDonorRequest";
+
+import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        {/* Use Routes instead of Switch */}
-        <Routes>
-          {/* Define routes with element instead of component */}
-          <Route path="/" element={<Login />} />
-          <Route path="/exercises" element={<ExerciseList />} />
-        </Routes>
-      </div>
-    </Router>
+    <BrowserRouter>
+      <Routes>
+
+        {/* Default → Login */}
+        <Route path="/" element={<Login />} />
+
+        {/* Login page */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Admin page */}
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/blood-donor-request" element={<BloodDonorRequest />} />
+
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/login" />} />
+
+      </Routes>
+    </BrowserRouter>
   );
 }
 

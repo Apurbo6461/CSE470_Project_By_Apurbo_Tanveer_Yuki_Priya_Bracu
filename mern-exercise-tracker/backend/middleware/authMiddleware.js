@@ -1,30 +1,36 @@
-// backend/middleware/authMiddleware.js
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
-// Middleware to verify JWT token
 const authVerify = (req, res, next) => {
   const authHeader = req.headers.authorization;
-
   if (!authHeader) {
-    return res.status(401).json({ error: 'Token missing, please login' });
+    return res.status(401).json({ error: "Token missing, please login" });
   }
 
-  // Extract token: "Bearer <token>"
-  const token = authHeader.split(' ')[1]; // Token is the second part after "Bearer"
-
+  const token = authHeader.split(" ")[1];
   if (!token) {
-    return res.status(401).json({ error: 'Token not provided in authorization header' });
+    return res.status(401).json({ error: "Token not provided" });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach user info to request
+    req.user = decoded;
     next();
   } catch (err) {
-    console.error('Token verification error:', err);
-    return res.status(401).json({ error: 'Invalid or expired token' });
+    return res.status(401).json({ error: "Invalid or expired token" });
   }
 };
 
-// Export middleware
+/* OPTIONAL: admin helper (does NOT affect old code) */
+const verifyAdmin = (req, res, next) => {
+  if (req.user?.role !== "admin") {
+    return res.status(403).json({ error: "Admin only" });
+  }
+  next();
+};
+
+/**
+ * ✅ EXPORT BOTH WAYS — BACKWARD COMPATIBLE
+ */
 module.exports = authVerify;
+module.exports.authVerify = authVerify;
+module.exports.verifyAdmin = verifyAdmin;
