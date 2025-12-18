@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lifelink Patient Manegement</title>
+  <style>
+    :root{--accent:#0b74de;--card:#fff;--muted:#666}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;padding:24px;color:#122;
+      background: linear-gradient(120deg,#d9ecff,#b8d8ff,#d9ecff);
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+    }
+    h1,h2,h3,h4{margin:0}
+    label{display:block;margin-top:10px;font-size:13px;color:var(--muted)}
+    input[type=text],input[type=email],input[type=number],textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e2e8f0;margin-top:6px;box-sizing:border-box}
+    button{padding:10px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:8px}
+    .preview-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .preview-grid img{width:96px;height:72px;object-fit:cover;border-radius:6px;border:1px solid #e6eef9}
+    .patient-details{margin-top:20px;background:#f1f7ff;padding:15px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+    .patient-details h4{margin-top:0;color:#0b74de}
+    @keyframes gradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  </style>
+</head>
+<body>
+  <div style="text-align:center;margin-bottom:10px">
+    <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" alt="Hospital Logo" style="width:70px;opacity:0.9">
+  </div>
+  <h2 style="text-align:center;font-family:sans-serif;margin-top:20px">Lifelink Patient Management Demo</h2>
+  <p style="text-align:center;color:#555;margin-bottom:20px">This is a simplified runnable demo version.</p>
+
+  <div style="max-width:480px;margin:auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,0.15)">
+    <h3 style="display:flex;align-items:center;gap:8px">
+        <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" style="width:22px">
+        Patient Profile
+    </h3>
+    <form id="patientForm">
+      <label>Patient Name <input type="text" id="name" required></label>
+      <label>Sex <select id="sex"><option>Male</option><option>Female</option><option>Other</option></select></label>
+      <label>Age <input type="number" id="age"></label>
+      <label>Phone <input type="text" id="phone"></label>
+      <label>Email <input type="email" id="email"></label>
+      <label>Address <textarea id="address"></textarea></label>
+      
+      <!-- Attach Previous Medical History -->
+      <label>Attach Previous Medical History (Images / PDFs)</label>
+      <input type="file" id="historyFiles" multiple>
+      <div id="preview" class="preview-grid"></div>
+
+      <button type="submit">Save Patient</button>
+    </form>
+
+    <p id="msg" style="color:green;margin-top:10px"></p>
+    <p id="patientIdDisplay" style="color:#0b74de;font-weight:bold;margin-top:5px"></p>
+
+    <!-- Patient Details Display -->
+    <div id="patientDetails" class="patient-details" style="display:none;"></div>
+  </div>
+
+  <script>
+    function generatePatientId(){
+      return 'PAT-' + Date.now().toString(36).toUpperCase();
+    }
+
+    document.getElementById('patientForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const patientId = generatePatientId();
+      document.getElementById('msg').innerText = 'Patient Saved Successfully!';
+      document.getElementById('patientIdDisplay').innerText = 'Patient ID: ' + patientId;
+
+      // Collect attached files
+      const filesInput = document.getElementById('historyFiles');
+      const fileNames = [...filesInput.files].map(f => f.name).join(', ') || 'No files attached';
+
+      // Show all details
+      const detailsDiv = document.getElementById('patientDetails');
+      detailsDiv.style.display = 'block';
+      detailsDiv.innerHTML = `
+        <h4>Patient Details</h4>
+        <p><strong>ID:</strong> ${patientId}</p>
+        <p><strong>Name:</strong> ${document.getElementById('name').value}</p>
+        <p><strong>Sex:</strong> ${document.getElementById('sex').value}</p>
+        <p><strong>Age:</strong> ${document.getElementById('age').value}</p>
+        <p><strong>Phone:</strong> ${document.getElementById('phone').value}</p>
+        <p><strong>Email:</strong> ${document.getElementById('email').value}</p>
+        <p><strong>Address:</strong> ${document.getElementById('address').value}</p>
+        <p><strong>Medical History Files:</strong> ${fileNames}</p>
+      `;
+    });
+
+    // File preview
+    document.getElementById('historyFiles').addEventListener('change', function() {
+      const preview = document.getElementById('preview');
+      preview.innerHTML = '';
+      [...this.files].forEach(file => {
+        if (file.type.startsWith('image/')) {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          preview.appendChild(img);
+        } else {
+          const div = document.createElement('div');
+          div.textContent = file.name;
+          div.style = "padding:5px;font-size:12px;background:#eef2f7;border-radius:6px";
+          preview.appendChild(div);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,37 +1,30 @@
 # Lifelink Patient Management (MERN MVC Demo)
 
-This repository has been cleaned up so the top-level contains only two folders:
+This is a small MERN-stack conversion of the provided single-file demo. It keeps the same features (form, file attachments, preview, patient ID generation) and organizes the app using an MVC structure.
 
-- `backend` — Express API and server-side code
-- `frontend` — React (Vite) app
+Quick start
 
-Each folder contains its own `package.json` and instructions for running locally.
+- Install backend deps:
 
-## Quick start
+```
+npm install
+```
 
-1. Backend
+- Start backend (dev with nodemon):
 
-```bash
-cd backend
+```
+npm run dev
+```
+
+- In a second terminal, start the client:
+
+```
+cd client
 npm install
 npm run dev
 ```
 
-Backend defaults to `http://localhost:5000`.
+By default the backend runs on `http://localhost:5000` and the client Vite dev server runs on `http://localhost:5173` (CORS enabled).
 
-2. Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend Vite dev server defaults to `http://localhost:5173` and talks to the backend (`/api/*`).
-
-## Notes
-
-- Uploads and data are stored in `backend/uploads` and `backend/data` by default (file-based storage). To use MongoDB, set the environment variable `STORAGE_MODE=mongodb` and configure `MONGO_URI` in `backend/.env.example`.
-- Use `npm run start` in each folder to start the production build where applicable.
-
-If you'd like, I can open a PR for this cleanup branch or merge it directly into `master`.
+API
+- POST `/api/patients` accepts `multipart/form-data` with field names: `name`, `sex`, `age`, `phone`, `email`, `address`, and file inputs under `historyFiles` (multiple allowed). Returns the saved patient JSON including generated `patientId` and file URLs under `/uploads`.
