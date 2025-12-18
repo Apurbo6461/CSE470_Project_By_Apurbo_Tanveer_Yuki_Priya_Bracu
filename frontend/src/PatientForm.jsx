@@ -33,8 +33,30 @@ export default function PatientForm() {
     fd.append('address', form.address)
     files.forEach(f => fd.append('historyFiles', f))
 
+    // Helper to try fallback ports when a network error occurs (common when default port is in use)
+    async function tryPostWithFallback(baseUrl, fd, maxFallback = 5) {
+      const url = new URL(baseUrl);
+      const hostname = url.hostname;
+      const originalPort = Number(url.port) || 80;
+      const portsToTry = [originalPort];
+      for (let i = 1; i <= maxFallback; i++) portsToTry.push(originalPort + i);
+
+      let lastErr = null;
+      for (const p of portsToTry) {
+        const target = `${url.protocol}//${hostname}:${p}`.replace(':80', '');
+        try {
+          const res = await fetch(`${target}/api/patients`, { method: 'POST', body: fd });
+          return res;
+        } catch (err) {
+          lastErr = err;
+          // continue to next port
+        }
+      }
+      throw lastErr || new Error('Network error');
+    }
+
     try {
-      const res = await fetch(`${API_BASE}/api/patients`, { method: 'POST', body: fd })
+      const res = await tryPostWithFallback(API_BASE, fd);
       const contentType = res.headers.get('content-type') || '';
       if (!res.ok) {
         let errText = res.statusText;
