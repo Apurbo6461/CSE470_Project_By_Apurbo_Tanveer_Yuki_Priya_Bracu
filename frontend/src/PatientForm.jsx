@@ -82,60 +82,148 @@ export default function PatientForm() {
   }
 
   return (
-    <div>
-      <div style={{ textAlign: 'center', marginBottom: 10 }}>
-        <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" alt="logo" style={{ width: 70, opacity: 0.9 }} />
-      </div>
-      <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" style={{ width: 22 }} />
-        Patient Profile
-      </h3>
-      <form onSubmit={handleSubmit} id="patientForm">
-        <label>Patient Name
-          <input id="name" value={form.name} onChange={handleChange} required />
-        </label>
-        <label>Sex
-          <select id="sex" value={form.sex} onChange={handleChange}>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
-          </select>
-        </label>
-        <label>Age
-          <input type="number" id="age" value={form.age} onChange={handleChange} />
-        </label>
-        <label>Phone
-          <input id="phone" value={form.phone} onChange={handleChange} />
-        </label>
-        <label>Email
-          <input type="email" id="email" value={form.email} onChange={handleChange} />
-        </label>
-        <label>Address
-          <textarea id="address" value={form.address} onChange={handleChange}></textarea>
-        </label>
-
-        <label>Attach Previous Medical History (Images / PDFs)</label>
-        <input type="file" id="historyFiles" multiple onChange={handleFileChange} />
-        <div className="preview-grid">
-          {previewUrls.map((u, i) => u ? <img key={i} src={u} alt="preview" /> : <div key={i} className="file-pill">{files[i].name}</div>)}
+    <div className="app-container">
+      <div className="header">
+        <div className="logo-container">
+          <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" alt="logo" />
         </div>
+        <h1>Patient Management System</h1>
+        <p>Manage patient records and medical history</p>
+      </div>
 
-        <button type="submit">Save Patient</button>
-      </form>
+      <div className="card">
+        <h3 className="card-title">
+          <img src="https://cdn-icons-png.flaticon.com/512/2967/2967350.png" alt="icon" />
+          Patient Registration Form
+        </h3>
+        <form onSubmit={handleSubmit} id="patientForm">
+          <div className="form-row">
+            <label>
+              Patient Name *
+              <input 
+                id="name" 
+                value={form.name} 
+                onChange={handleChange} 
+                placeholder="Enter patient full name"
+                required 
+              />
+            </label>
+            <label>
+              Sex
+              <select id="sex" value={form.sex} onChange={handleChange}>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </label>
+          </div>
 
-      <p style={{ color: 'green', marginTop: 10 }}>{msg}</p>
+          <div className="form-row">
+            <label>
+              Age
+              <input 
+                type="number" 
+                id="age" 
+                value={form.age} 
+                onChange={handleChange}
+                placeholder="Enter age"
+                min="0"
+                max="150"
+              />
+            </label>
+            <label>
+              Phone
+              <input 
+                id="phone" 
+                value={form.phone} 
+                onChange={handleChange}
+                placeholder="Enter phone number"
+                type="tel"
+              />
+            </label>
+          </div>
+
+          <label>
+            Email
+            <input 
+              type="email" 
+              id="email" 
+              value={form.email} 
+              onChange={handleChange}
+              placeholder="Enter email address"
+            />
+          </label>
+
+          <label>
+            Address
+            <textarea 
+              id="address" 
+              value={form.address} 
+              onChange={handleChange}
+              placeholder="Enter full address"
+            ></textarea>
+          </label>
+
+          <div className="file-upload-section">
+            <label>
+              Attach Previous Medical History (Images / PDFs)
+              <div className="file-input-wrapper">
+                <input 
+                  type="file" 
+                  id="historyFiles" 
+                  multiple 
+                  onChange={handleFileChange}
+                  accept="image/*,.pdf"
+                />
+              </div>
+            </label>
+            {previewUrls.length > 0 && (
+              <div className="preview-grid">
+                {previewUrls.map((u, i) => 
+                  u ? (
+                    <img key={i} src={u} alt="preview" />
+                  ) : (
+                    <div key={i} className="file-pill">{files[i].name}</div>
+                  )
+                )}
+              </div>
+            )}
+          </div>
+
+          <button type="submit">Save Patient</button>
+        </form>
+
+        {msg && (
+          <div className={`message ${msg.includes('Error') ? 'error' : 'success'}`}>
+            {msg}
+          </div>
+        )}
+      </div>
 
       {patient && (
-        <div className="patient-details" style={{ marginTop: 20 }}>
-          <h4>Patient Details</h4>
-          <p><strong>ID:</strong> {patient.patientId}</p>
-          <p><strong>Name:</strong> {patient.name}</p>
-          <p><strong>Sex:</strong> {patient.sex}</p>
-          <p><strong>Age:</strong> {patient.age}</p>
-          <p><strong>Phone:</strong> {patient.phone}</p>
-          <p><strong>Email:</strong> {patient.email}</p>
-          <p><strong>Address:</strong> {patient.address}</p>
-          <p><strong>Medical History Files:</strong> {patient.files && patient.files.map(f => <div key={f.filename}><a href={f.url} target="_blank" rel="noreferrer">{f.originalname}</a></div>)}</p>
+        <div className="card">
+          <div className="patient-details">
+            <h4>Patient Details</h4>
+            <p><strong>ID:</strong> {patient.patientId}</p>
+            <p><strong>Name:</strong> {patient.name}</p>
+            <p><strong>Sex:</strong> {patient.sex}</p>
+            {patient.age && <p><strong>Age:</strong> {patient.age}</p>}
+            {patient.phone && <p><strong>Phone:</strong> {patient.phone}</p>}
+            {patient.email && <p><strong>Email:</strong> {patient.email}</p>}
+            {patient.address && <p><strong>Address:</strong> {patient.address}</p>}
+            {patient.files && patient.files.length > 0 && (
+              <p>
+                <strong>Medical History Files:</strong>
+                {patient.files.map(f => (
+                  <div key={f.filename}>
+                    <a href={`http://localhost:5001${f.url}`} target="_blank" rel="noreferrer">
+                      {f.originalname}
+                    </a>
+                  </div>
+                ))}
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>

@@ -1,10 +1,14 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App'
-import './style.css'
+import PatientForm from './PatientForm'
+import './styles.css'
 
-createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-)
+function App(){
+  return (
+    <div style={{ padding: 20 }}>
+      <PatientForm />
+    </div>
+  )
+}
+
+createRoot(document.getElementById('root')).render(<App />)

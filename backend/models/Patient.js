@@ -1,22 +1,40 @@
 const mongoose = require('mongoose');
 
-const FileSchema = new mongoose.Schema({
-  originalname: String,
-  filename: String,
-  mimetype: String,
-  url: String
+const patientSchema = new mongoose.Schema({
+  patientId: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  sex: {
+    type: String,
+    enum: ['Male', 'Female', 'Other'],
+    required: true
+  },
+  age: {
+    type: Number
+  },
+  phone: {
+    type: String
+  },
+  email: {
+    type: String
+  },
+  address: {
+    type: String
+  },
+  files: [{
+    filename: String,
+    originalname: String,
+    url: String
+  }]
+}, {
+  timestamps: true
 });
 
-const PatientSchema = new mongoose.Schema({
-  patientId: { type: String, required: true, unique: true },
-  name: { type: String },
-  sex: { type: String },
-  age: { type: Number },
-  phone: { type: String },
-  email: { type: String },
-  address: { type: String },
-  files: [FileSchema],
-  createdAt: { type: Date, default: Date.now }
-});
+module.exports = mongoose.models.Patient || mongoose.model('Patient', patientSchema);
 
-module.exports = mongoose.model('Patient', PatientSchema);
