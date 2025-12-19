@@ -38,7 +38,7 @@ function App() {
               <LayoutDashboard size={28} />
             </div>
             <span className="hidden lg:block font-black text-2xl tracking-tighter text-slate-900">
-              LFE<span className="text-blue-600">Link</span>
+              LIFE<span className="text-blue-600">LINK</span>
             </span>
           </div>
 
