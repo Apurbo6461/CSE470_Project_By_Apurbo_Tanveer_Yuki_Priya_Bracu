@@ -32,7 +32,7 @@ const Login = () => {
 
       if (role === "admin") navigate("/admin");
       else if (role === "doctor") navigate("/doctor-dashboard");
-      else if (role === "patient") navigate("/patient-dashboard");
+      else if (role === "patient") navigate("/patient-form");
       else if (role === "donor") navigate("/donor-dashboard");
       else if (role === "hospital") navigate("/hospital-dashboard");
     } catch (err) {
@@ -77,3 +77,4 @@ const Login = () => {
 };
 
 export default Login;
+

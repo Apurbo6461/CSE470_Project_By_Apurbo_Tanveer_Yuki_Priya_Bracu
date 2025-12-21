@@ -1,8 +1,9 @@
-// backend/routes/adminRoutes.js
+
+
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User'); // Assuming User model is already defined
-const {authVerify} = require('../middleware/authMiddleware');
+const authVerify = require('../middleware/authMiddleware');
 const allowRoles = require('../middleware/roleMiddleware');
 
 const router = express.Router();

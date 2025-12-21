@@ -1,50 +1,80 @@
+// backend/server.js
 const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes'); // Import the auth routes
-const adminRoutes = require('./routes/adminRoutes'); // Import the admin routes
-const testRoutes = require('./routes/testRoutes'); // Import the test routes (if needed)
-const bloodDonorRoutes = require("./routes/bloodDonorRoutes");
-dotenv.config();  // Load environment variables from .env
+const path = require('path');
+
+const dotenv = require('dotenv');
+dotenv.config();
+
+const { connectDB } = require('./config/db');
+connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors());         // Enable CORS globally for all routes
-app.use(express.json()); // Parse incoming JSON requests
+// Diagnostic logger
+// app.use((req, res, next) => {
+//   console.log('INCOMING:', req.method, req.originalUrl, 'content-type:', req.headers['content-type']);
+//   next();
+// });
 
-// Use auth routes for /api/auth path
-app.use('/api/auth', authRoutes);  // Mount the authentication routes
-app.use('/api/admin', adminRoutes); // Mount the admin routes
-app.use('/api', testRoutes);       // Mount the test routes if you need them
-app.use("/api/blood", require("./routes/bloodDonorRoutes"));
+// Body parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// MongoDB connection
-mongoose
-  .connect(process.env.MONGO_URI) // No need for options like useNewUrlParser or useUnifiedTopology
-  .then(() => {
-    console.log('MongoDB connected successfully');
-  })
-  .catch((err) => {
-    console.error('MongoDB connection error:', err);
-    process.exit(1);  // Exit the process if MongoDB connection fails
-  });
+app.use(cors());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Handle 404 errors (route not found)
-app.use((req, res, next) => {
-  const error = new Error('Not Found');
-  error.status = 404;
-  next(error);
-});
+// ======================
+// ROUTES
+// ======================
 
-// Generic error handler for all uncaught errors
+// Patient routes
+try {
+  const patientRoutes = require('./routes/patientRoutes');
+  app.use('/api/patients', patientRoutes);
+  console.log('Mounted patientRoutes');
+} catch (err) {
+  console.error('Failed to mount patientRoutes:', err);
+}
+
+// Blood donor routes
+try {
+  const bloodDonorRoutes = require('./routes/bloodDonorRoutes');
+  app.use('/api/blood', bloodDonorRoutes);
+  console.log('Mounted bloodDonorRoutes');
+} catch (err) {
+  console.error('Failed to mount bloodDonorRoutes:', err);
+}
+
+// Auth routes
+try {
+  const authRoutes = require('./routes/authRoutes');
+  app.use('/api/auth', authRoutes);
+  console.log('Mounted authRoutes');
+} catch (err) {
+  console.error('Failed to mount authRoutes:', err);
+}
+
+// Admin routes
+try {
+  const adminRoutes = require('./routes/adminRoutes');
+  app.use('/api/admin', adminRoutes);
+  console.log('Mounted adminRoutes');
+
+} catch (err) {
+  console.error('Failed to mount adminRoutes:', err);
+}
+
+// 404 handler
+app.use((req, res) => res.status(404).json({ message: 'Not Found' }));
+
+// Global error handler
 app.use((error, req, res, next) => {
-  res.status(error.status || 500).json({ message: error.message });
+  console.error('GLOBAL ERROR HANDLER:', error);
+  res.status(error && error.status ? error.status : 500)
+     .json({ message: error && error.message ? error.message : 'Server error' });
 });
 
-// Start the server
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import  {jwtDecode}  from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 
@@ -47,16 +47,23 @@ const AdminDashboard = () => {
   const addUser = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-
-    const res = await axios.post(
-      "http://localhost:5000/api/admin/users",
-      newUser,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    setUsers([...users, res.data]);
-    setShowAddUserForm(false);
-    setNewUser({ name: "", email: "", password: "", role: "doctor" });
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/admin/users",
+        newUser,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setUsers([...users, res.data]);
+      setShowAddUserForm(false);
+      setNewUser({ name: "", email: "", password: "", role: "doctor" });
+      setError(""); // clear any previous error
+    } catch (err) {
+      setError(
+        err.response?.data?.error ||
+        err.response?.data?.message ||
+        "Failed to add user"
+      );
+    }
   };
 
   const removeUser = async (id) => {
@@ -225,27 +232,27 @@ const AdminDashboard = () => {
           <table>
             <thead>
               <tr>
-                <th>Name</th><th>Blood</th><th>Location</th>
+                <th>Name</th><th>Blood Group</th><th>Location</th>
                 <th>Contact</th><th>Status</th><th>Action</th>
               </tr>
             </thead>
             <tbody>
               {bloodRequests.map((r) => (
                 <tr key={r._id}>
-                  <td>{r.name}</td>
-                  <td>{r.bloodGroup}</td>
-                  <td>{r.location}</td>
-                  <td>{r.contactInfo}</td>
+                  <td>{r.requesterInfo?.name || '-'}</td>
+                  <td>{r.bloodGroup || '-'}</td>
+                  <td>{r.location?.address || '-'}</td>
+                  <td>{r.requesterInfo?.email || r.requesterInfo?.phone || '-'}</td>
                   <td>
                     <span className={`badge ${r.status}`}>{r.status}</span>
                   </td>
                   <td>
-                    {r.status === "pending" && (
+                    {r.status === "open" || r.status === "pending" ? (
                       <>
                         <button className="btn success" onClick={() => approve(r._id)}>Approve</button>
                         <button className="btn warning" onClick={() => reject(r._id)}>Reject</button>
                       </>
-                    )}
+                    ) : null}
                   </td>
                 </tr>
               ))}

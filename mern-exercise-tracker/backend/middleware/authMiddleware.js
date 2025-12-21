@@ -1,36 +1,32 @@
-const jwt = require("jsonwebtoken");
+// backend/middleware/authMiddleware.js
+const jwt = require('jsonwebtoken');
 
-const authVerify = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({ error: "Token missing, please login" });
-  }
+const SECRET = process.env.JWT_SECRET || 'dev-secret';
 
-  const token = authHeader.split(" ")[1];
-  if (!token) {
-    return res.status(401).json({ error: "Token not provided" });
-  }
-
+function authVerify(req, res, next) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    const authHeader = req.headers.authorization || req.headers.Authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+
+    const payload = jwt.verify(token, SECRET);
+
+    req.user = {
+      _id: payload._id || payload.id,
+      name: payload.name,
+      email: payload.email,
+      role: payload.role,
+    };
+
     next();
   } catch (err) {
-    return res.status(401).json({ error: "Invalid or expired token" });
+    console.error('authVerify error:', err && err.message ? err.message : err);
+    return res.status(401).json({ message: 'Invalid token' });
   }
-};
+}
 
-/* OPTIONAL: admin helper (does NOT affect old code) */
-const verifyAdmin = (req, res, next) => {
-  if (req.user?.role !== "admin") {
-    return res.status(403).json({ error: "Admin only" });
-  }
-  next();
-};
-
-/**
- * ✅ EXPORT BOTH WAYS — BACKWARD COMPATIBLE
- */
 module.exports = authVerify;
-module.exports.authVerify = authVerify;
-module.exports.verifyAdmin = verifyAdmin;
