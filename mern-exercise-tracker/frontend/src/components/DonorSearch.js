@@ -38,10 +38,10 @@ const DonorSearch = () => {
           {donors.length === 0 && <p>No verified or approved donors available.</p>}
           {donors.map((donor) => (
             <div key={donor._id} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}>
-              <p><strong>Name:</strong> {donor.name}</p>
+              <p><strong>Name:</strong> {donor.requesterInfo?.name || '-'}</p>
               <p><strong>Blood Group:</strong> {donor.bloodGroup}</p>
-              <p><strong>Location:</strong> {donor.location}</p>
-              <p><strong>Contact:</strong> {donor.contactInfo}</p>
+              <p><strong>Location:</strong> {donor.location?.address || '-'}</p>
+              <p><strong>Contact:</strong> {donor.requesterInfo?.phone || donor.requesterInfo?.email || '-'}</p>
             </div>
           ))}
         </div>

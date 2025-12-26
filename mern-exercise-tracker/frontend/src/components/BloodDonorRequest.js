@@ -23,7 +23,16 @@ const BloodDonorRequest = () => {
     setError("");
 
     try {
-      await axios.post("http://localhost:5000/api/blood", form);
+      // Prepare data to match backend expectations
+      const payload = {
+        bloodGroup: form.bloodGroup,
+        location: { address: form.location },
+        requesterInfo: {
+          name: form.name,
+          phone: form.contactInfo
+        }
+      };
+      await axios.post("http://localhost:5000/api/blood", payload);
       setSuccess("Blood donor request submitted successfully.");
       setForm({ name: "", bloodGroup: "", location: "", contactInfo: "" });
     } catch {

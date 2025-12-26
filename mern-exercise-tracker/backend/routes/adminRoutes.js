@@ -76,4 +76,26 @@ router.delete("/users/:id", authVerify, allowRoles("admin"), async (req, res) =>
   }
 });
 
+
+// PATCH /blood-requests/:id - Admin approve or reject blood donor request
+const Blood = require('../models/Blood');
+router.patch('/blood-requests/:id', authVerify, allowRoles('admin'), async (req, res) => {
+  try {
+    const { status } = req.body; // expected: 'verified', 'rejected', etc.
+    if (!['verified', 'rejected', 'open', 'approved'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
+    const bloodRequest = await Blood.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+    if (!bloodRequest) return res.status(404).json({ message: 'Blood request not found' });
+    res.json(bloodRequest);
+  } catch (err) {
+    console.error('Error updating blood request status:', err);
+    res.status(500).json({ message: 'Failed to update blood request status' });
+  }
+});
+
 module.exports = router;

@@ -78,3 +78,8 @@ app.use((error, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Add a simple route to handle the root ("/") URL
+// app.get('/', (req, res) => {
+//   res.send('Server is running and ready to accept requests!');
+// });
+

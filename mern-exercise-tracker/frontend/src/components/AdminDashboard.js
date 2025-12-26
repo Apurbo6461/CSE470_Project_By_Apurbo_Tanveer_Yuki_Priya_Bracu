@@ -89,14 +89,13 @@ const AdminDashboard = () => {
   const approve = async (id) => {
     const token = localStorage.getItem("token");
     await axios.patch(
-      `http://localhost:5000/api/blood/admin/${id}/approve`,
-      {},
+      `http://localhost:5000/api/admin/blood-requests/${id}`,
+      { status: "verified" },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-
     setBloodRequests((prev) =>
       prev.map((r) =>
-        r._id === id ? { ...r, status: "approved" } : r
+        r._id === id ? { ...r, status: "verified" } : r
       )
     );
   };
@@ -104,11 +103,10 @@ const AdminDashboard = () => {
   const reject = async (id) => {
     const token = localStorage.getItem("token");
     await axios.patch(
-      `http://localhost:5000/api/blood/admin/${id}/reject`,
-      {},
+      `http://localhost:5000/api/admin/blood-requests/${id}`,
+      { status: "rejected" },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-
     setBloodRequests((prev) =>
       prev.map((r) =>
         r._id === id ? { ...r, status: "rejected" } : r

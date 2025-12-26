@@ -33,7 +33,7 @@ export default function RequestForm({ defaultContactName = '', defaultContactEma
     };
 
     try {
-      const res = await fetch(`${API_BASE}/api/requests`, {
+      const res = await fetch(`${API_BASE}/api/blood`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

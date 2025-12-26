@@ -34,7 +34,7 @@ export default function DonorSearch() {
     const headers = verifyToken ? { Authorization: `Bearer ${verifyToken}` } : {};
 
     try {
-      const res = await fetch(`${API_BASE}/api/blood/search`, { method: 'GET', headers });
+      const res = await fetch(`${API_BASE}/api/blood/verified-donors`, { method: 'GET', headers });
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
           throw new Error('Not authorized to view donors');
